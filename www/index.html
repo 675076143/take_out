@@ -18,7 +18,7 @@
             <top-bar></top-bar>
             <left-nav></left-nav>
             <div class="food-card-list">
-                <food-card v-for="count in 10"></food-card>
+                <food-card v-for="food in foodList" :food="food" @add-food="getFood" :key="food.foodId"></food-card>
             </div>
             <bottom-bar></bottom-bar>
         </div>
@@ -76,15 +76,15 @@
                     <img src="img/宫保鸡丁.jpg" />
                 </div>
                 <div class="food-info">
-                    <h5>{{foodDesc}}</h5>
-                    <h4>￥{{foodPrice}}</h4>
+                    <h5>{{food.foodDesc}}</h5>
+                    <h4>￥{{food.foodPrice}}</h4>
                     <div class="food-num-control">
                         <Button type="primary" icon="ios-remove"
                                 shape="circle" class="remove"
-                                @click="foodCount--"
-                                :style="{display:foodCount?'block':'none'}"></Button>
-                        <span>{{foodCount!=0?foodCount:''}}</span>
-                        <Button type="primary" icon="ios-add" shape="circle" class="add" @click="foodCount++"></Button>
+                                @click="food.foodCount--"
+                                :style="{display:food.foodCount?'block':'none'}"></Button>
+                        <span>{{food.foodCount!=0?food.foodCount:''}}</span>
+                        <Button type="primary" icon="ios-add" shape="circle" class="add" @click="addFood"></Button>
                     </div>
                 </div>
             </div>

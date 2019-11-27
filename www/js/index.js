@@ -16,7 +16,53 @@ document.addEventListener("deviceready",()=>{
 const app = new Vue({
     el:'#app',
     data:{
+        foodList: [
+            {
+                foodId:0,
+                foodDesc:'9.9元香辣鸡腿堡',
+                foodPrice:9.9,
+                foodCount:0
+            },
+            {
+                foodId:1,
+                foodDesc:'9.9元香辣鸡腿堡',
+                foodPrice:9.9,
+                foodCount:0
+            },
+            {
+                foodId:2,
+                foodDesc:'9.9元香辣鸡腿堡',
+                foodPrice:9.9,
+                foodCount:0
+            },
+            {
+                foodId:3,
+                foodDesc:'9.9元香辣鸡腿堡',
+                foodPrice:9.9,
+                foodCount:0
+            },
+            {
+                foodId:4,
+                foodDesc:'9.9元香辣鸡腿堡',
+                foodPrice:9.9,
+                foodCount:0
+            },
+            {
+                foodId:5,
+                foodDesc:'9.9元香辣鸡腿堡',
+                foodPrice:9.9,
+                foodCount:0
+            },
 
+        ],
+        orderList:[],
+    },
+    methods:{
+        getFood(params){
+            this.orderList.push(params)
+            console.log('params=>',params)
+            console.log('orderList=>',this.orderList)
+        }
     },
     components:{
         'top-bar':{
@@ -45,11 +91,27 @@ const app = new Vue({
         },
         'food-card':{
             template:'#food-card',
+            props:{
+              food:{
+                  type:Object,
+                  default:{}
+              }
+            },
             data(){
                 return{
-                    foodDesc:'9.9元香辣鸡腿堡',
-                    foodPrice:9.9,
-                    foodCount:0
+
+                }
+            },
+            mounted(){
+                console.log("props=>",this.food)
+            },
+            methods:{
+                addFood(){
+                    this.food.foodCount++
+                    const {foodCount,foodDesc,foodPrice,foodId} = this.food;
+                    this.$emit('add-food',{
+                        foodId,foodPrice,foodDesc,foodCount
+                    })
                 }
             }
         }
