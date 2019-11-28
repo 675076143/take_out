@@ -58,7 +58,16 @@ const app = new Vue({
     },
     methods:{
         getFood(params){
-            this.orderList.push(params)
+            let isExisted = false
+            for(let i=0;i< this.orderList.length;i++){
+                if(this.orderList[i].foodId == params.foodId){
+                    this.orderList[i].foodCount++
+                    isExisted = true
+                }
+            }
+            if(!isExisted){
+                this.orderList.push(params)
+            }
             console.log('params=>',params)
             console.log('orderList=>',this.orderList)
         },
@@ -83,9 +92,25 @@ const app = new Vue({
         },
         'bottom-bar':{
             template:'#bottom-bar',
+            props:{
+                orderList: {
+                    type: Array,
+                    default: ()=>[]
+                }
+            },
+            computed:{
+                price(){
+                    let total = 0
+                    for(let i=0;i< this.orderList.length;i++){
+                        total += this.orderList[i].foodPrice*this.orderList[i].foodCount
+                        console.log("item=>",total)
+                    }
+                    console.log("total=>",total)
+                    return total.toFixed(2)
+                }
+            },
             data(){
                 return{
-                    price:69.0,
                     modal:false,
                     loading:true,
                     formOrder:{
@@ -111,6 +136,7 @@ const app = new Vue({
                     this.modal=true
                 },
                 sendOrder(name){
+                    console.log("sendOrderList=>",this.orderList)
                     this.$refs[name].validate((valid) => {
                         if (valid) {
                             this.$Message.success('Success!');
@@ -128,7 +154,7 @@ const app = new Vue({
             props:{
               food:{
                   type:Object,
-                  default:{}
+                  default:()=>{}
               }
             },
             data(){

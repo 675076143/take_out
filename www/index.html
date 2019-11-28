@@ -20,8 +20,9 @@
             <left-nav></left-nav>
             <div class="food-card-list">
                 <food-card v-for="food in foodList" :food="food" @add-food="getFood" :key="food.foodId"></food-card>
+                <br/><br/>
             </div>
-            <bottom-bar></bottom-bar>
+            <bottom-bar :order-list="orderList"></bottom-bar>
         </div>
         <!--头部导航栏-->
         <script type="text/x-template" id="top-bar">
@@ -84,18 +85,10 @@
                             <Input v-model="formOrder.phone" placeholder="请输入联系电话！"></Input>
                         </FormItem>
                     </Form>
-                    <List header="餐品详情" footer="共八件，小计 ￥300.00" border size="small" class="food-detail">
-                        <ListItem class="food-detail-item">
-                            <span>商品名称</span>
-                            <span>￥20 * 1</span>
-                        </ListItem>
-                        <ListItem class="food-detail-item">
-                            <span>商品名称</span>
-                            <span>￥20 * 1</span>
-                        </ListItem>
-                        <ListItem class="food-detail-item">
-                            <span>商品名称</span>
-                            <span>￥20 * 1</span>
+                    <List header="餐品详情" :footer="'共八件，小计 ￥'+price" border size="small" class="food-detail">
+                        <ListItem v-for="item in orderList" class="food-detail-item">
+                            <span>{{item.foodId}}</span>
+                            <span>￥{{item.foodPrice}} * {{item.foodCount}}</span>
                         </ListItem>
                     </List>
                 </Modal>
