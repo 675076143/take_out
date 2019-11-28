@@ -12,7 +12,6 @@ document.addEventListener("deviceready",()=>{
 
 })
 
-
 const app = new Vue({
     el:'#app',
     data:{
@@ -62,7 +61,8 @@ const app = new Vue({
             this.orderList.push(params)
             console.log('params=>',params)
             console.log('orderList=>',this.orderList)
-        }
+        },
+
     },
     components:{
         'top-bar':{
@@ -85,9 +85,43 @@ const app = new Vue({
             template:'#bottom-bar',
             data(){
                 return{
-                    price:69.0
+                    price:69.0,
+                    modal:false,
+                    loading:true,
+                    formOrder:{
+                        address:"",
+                        name:"",
+                        phone:"",
+                    },
+                    ruleValidate:{
+                        address: [
+                            { required: true, message: '配送地址不能为空', trigger: 'blur' }
+                        ],
+                        name: [
+                            { required: true, message: '用户姓名不能为空', trigger: 'blur' }
+                        ],
+                        phone: [
+                            { required: true, message: '联系电话不能为空', trigger: 'blur' },
+                        ],
+                    }
                 }
-            }
+            },
+            methods:{
+                order(){
+                    this.modal=true
+                },
+                sendOrder(name){
+                    this.$refs[name].validate((valid) => {
+                        if (valid) {
+                            this.$Message.success('Success!');
+                            this.modal = false
+                        } else {
+                            this.$Message.error('Fail!');
+                        }
+                    })
+
+                }
+            },
         },
         'food-card':{
             template:'#food-card',

@@ -8,6 +8,7 @@
 
         <link rel="stylesheet" type="text/css" href="http://unpkg.com/view-design/dist/styles/iview.css">
         <script type="text/javascript" src="js/vue.js"></script>
+        <script src="js/vue-router.js"></script>
         <script type="text/javascript" src="js/iview.min.js"></script>
 
         <link rel="stylesheet" type="text/css" href="css/index.css">
@@ -66,7 +67,38 @@
                         <span class="tPrice">另需外送费 ￥9.0</span>
                     </div>
                 </div>
-                <Button type="primary" class="order">下订单</Button>
+                <Button type="primary" class="order" @click="order">下订单</Button>
+                <Modal
+                        v-model="modal"
+                        title="Title"
+                        :loading="loading"
+                        @on-ok="sendOrder('formOrder')">
+                    <Form ref="formOrder" :model="formOrder" :rules="ruleValidate" :label-width="80">
+                        <FormItem label="配送地址" prop="address">
+                            <Input v-model="formOrder.address" placeholder="请输入配送地址！"></Input>
+                        </FormItem>
+                        <FormItem label="姓名" prop="name">
+                            <Input v-model="formOrder.name" placeholder="请输入姓名！"></Input>
+                        </FormItem>
+                        <FormItem label="联系电话" prop="phone">
+                            <Input v-model="formOrder.phone" placeholder="请输入联系电话！"></Input>
+                        </FormItem>
+                    </Form>
+                    <List header="餐品详情" footer="共八件，小计 ￥300.00" border size="small" class="food-detail">
+                        <ListItem class="food-detail-item">
+                            <span>商品名称</span>
+                            <span>￥20 * 1</span>
+                        </ListItem>
+                        <ListItem class="food-detail-item">
+                            <span>商品名称</span>
+                            <span>￥20 * 1</span>
+                        </ListItem>
+                        <ListItem class="food-detail-item">
+                            <span>商品名称</span>
+                            <span>￥20 * 1</span>
+                        </ListItem>
+                    </List>
+                </Modal>
             </div>
         </script>
         <!--商品卡片-->

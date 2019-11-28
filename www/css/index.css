@@ -120,3 +120,13 @@ html,body{
 .food-num-control>span{
     margin: 0 10px;
 }
+.food-detail-item{
+    display: flex;
+    width: 100%;
+}
+.food-detail-item>span:nth-child(1){
+    flex: 8;
+}
+.food-detail-item>span:nth-child(2){
+    flex: 2;
+}
