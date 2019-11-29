@@ -6,12 +6,13 @@
 *       resolve(response) => resolve(response.data)
 * 使用NProgress在发送请求时显示进度条
 * */
-function ajax (url, data={}, method="GET") {
+function ajax (url, data={}, method="GET",that) {
 
 
     //返回Promise对象
     //在函数内部处理异常
     return new Promise((resolve, reject) => {
+        that.$Spin.show();
         let promise
         //1. 执行异步Ajax请求
         if (method==="GET"){//get请求
@@ -26,11 +27,12 @@ function ajax (url, data={}, method="GET") {
             promise = axios.delete(url,data)
         }
         else {//post请求
-            promise = axios.post(url,Qs.stringify(data))
+            promise = axios.post(url,data)
         }
         //2. 如果成功了，调用resolve
         promise.then(response=>{
             resolve(response.data)
+            that.$Spin.hide();
         })
         //3. 如果失败了，调用reject
         promise.catch(error=>{
@@ -38,6 +40,7 @@ function ajax (url, data={}, method="GET") {
             //reject(error)
             //使用antd的message
             console.log('请求错误： '+error.message)
+            that.$Spin.hide();
         })
 
     })

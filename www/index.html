@@ -6,7 +6,6 @@
         <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
         <meta charset="UTF-8">
 
-        <link rel="stylesheet" type="text/css" href="http://unpkg.com/view-design/dist/styles/iview.css">
         <script type="text/javascript" src="js/vue.js"></script>
         <script src="js/vue-router.js"></script>
         <script type="text/javascript" src="js/iview.min.js"></script>
@@ -16,44 +15,55 @@
     </head>
     <body>
         <div id="app" class="app">
-            <top-bar></top-bar>
-            <left-nav></left-nav>
+            <top-bar :city="city"></top-bar>
+            <left-nav @change-food="changeFoods"></left-nav>
             <div class="food-card-list">
                 <food-card v-for="food in foodList" :food="food" @add-food="getFood" :key="food.foodId"></food-card>
                 <br/><br/>
             </div>
             <bottom-bar :order-list="orderList"></bottom-bar>
         </div>
+
         <!--头部导航栏-->
         <script type="text/x-template" id="top-bar">
             <div class="top-bar">
                 <div class="top-bar-top">
                     <h2>外卖</h2>
-                    <div>
+                    <div @click="modal=true">
                         <Icon type="md-locate" size="20" />
                     </div>
                 </div>
                 <div class="top-bar-bottom">
-                    <h3>漳州</h3>
-                    <h4>详细地址</h4>
+                    <h3>{{city}}</h3>
+                    <h4>就近门店配送，预计30分钟</h4>
                 </div>
+                <Modal v-model="modal" fullscreen title="定位">
+                    <input id="search" type="search" placeholder="城市名称" v-model="city"/>
+                    <div id="container"></div>
+                </Modal>
             </div>
         </script>
         <!--左侧导航栏-->
-        <script type="text/x-template" id="left-nav">
+        <script type="text/x-template" id="left-nav" >
             <div class="left-nav">
                 <Menu :theme="theme3" active-name="1" width="auto">
                     <MenuItem name="1">
-                        热卖
+                        <span  @click="getHotFood">热卖</span>
                     </MenuItem>
-                    <MenuItem name="2">
-                        主食
+                    <MenuItem name="2" >
+                        <span @click="getFood('主食')">
+                            主食
+                        </span>
                     </MenuItem>
-                    <MenuItem name="3">
-                        小菜
+                    <MenuItem name="3" >
+                        <span @click="getFood('小菜')">
+                            小菜
+                        </span>
                     </MenuItem>
                     <MenuItem name="4">
-                        饮料
+                        <span @click="getFood('饮品')">
+                            饮品
+                        </span>
                     </MenuItem>
                 </Menu>
             </div>
@@ -85,12 +95,13 @@
                             <Input v-model="formOrder.phone" placeholder="请输入联系电话！"></Input>
                         </FormItem>
                     </Form>
-                    <List header="餐品详情" :footer="'共八件，小计 ￥'+price" border size="small" class="food-detail">
-                        <ListItem v-for="item in orderList" class="food-detail-item">
-                            <span>{{item.foodId}}</span>
+                    <List header="餐品详情" :footer="'共'+count+'件，小计 ￥'+price" border size="small" class="food-detail">
+                        <ListItem v-for="item in orderList" class="food-detail-item" :key="item.foodId">
+                            <span>{{item.foodName}}</span>
                             <span>￥{{item.foodPrice}} * {{item.foodCount}}</span>
                         </ListItem>
                     </List>
+                    <span>另需配送费￥9.0</span>
                 </Modal>
             </div>
         </script>
@@ -98,15 +109,16 @@
         <script type="text/x-template" id="food-card">
             <div class="food-card">
                 <div class="food-img">
-                    <img src="img/宫保鸡丁.jpg" />
+                    <img :src="img_src" />
                 </div>
                 <div class="food-info">
+                    <h4>{{food.foodName}}</h4>
                     <h5>{{food.foodDesc}}</h5>
-                    <h4>￥{{food.foodPrice}}</h4>
+                    <h5>￥{{food.foodPrice}}</h5>
                     <div class="food-num-control">
                         <Button type="primary" icon="ios-remove"
                                 shape="circle" class="remove"
-                                @click="food.foodCount--"
+                                @click="removeFood"
                                 :style="{display:food.foodCount?'block':'none'}"></Button>
                         <span>{{food.foodCount!=0?food.foodCount:''}}</span>
                         <Button type="primary" icon="ios-add" shape="circle" class="add" @click="addFood"></Button>
@@ -115,10 +127,11 @@
             </div>
         </script>
         <script type="text/javascript" src="cordova.js"></script>
-        <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=fcd5f097ff80fd733cf92c2efa967f4c"></script>
+        <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=fcd5f097ff80fd733cf92c2efa967f4c&plugin=AMap.CitySearch"></script>
         <script src="js/axios.js"></script>
         <script src="js/ajax.js"></script>
         <script src="js/ajaxAPI.js"></script>
+
         <script type="text/javascript" src="js/index.js"></script>
 
 

@@ -1,49 +1,135 @@
 <!DOCTYPE html>
-<!--
-    Licensed to the Apache Software Foundation (ASF) under one
-    or more contributor license agreements.  See the NOTICE file
-    distributed with this work for additional information
-    regarding copyright ownership.  The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance
-    with the License.  You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-     KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
--->
 <html>
     <head>
-        <!--
-        Customize this policy to fit your own app's needs. For more guidance, see:
-            https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
-        Some notes:
-            * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
-            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
-            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
-                * Enable inline JS: add 'unsafe-inline' to default-src
-        -->
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
         <meta name="format-detection" content="telephone=no">
         <meta name="msapplication-tap-highlight" content="no">
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+        <meta charset="UTF-8">
+
+        <script type="text/javascript" src="js/vue.js"></script>
+        <script src="js/vue-router.js"></script>
+        <script type="text/javascript" src="js/iview.min.js"></script>
+
         <link rel="stylesheet" type="text/css" href="css/index.css">
         <title>Hello World</title>
     </head>
     <body>
-        <div class="app">
-            <h1>Apache Cordova</h1>
-            <div id="deviceready" class="blink">
-                <p class="event listening">Connecting to Device</p>
-                <p class="event received">Device is Ready</p>
+        <div id="app" class="app">
+            <top-bar></top-bar>
+            <left-nav @change-food="changeFoods"></left-nav>
+            <div class="food-card-list">
+                <food-card v-for="food in foodList" :food="food" @add-food="getFood" :key="food.foodId"></food-card>
+                <br/><br/>
             </div>
+            <bottom-bar :order-list="orderList"></bottom-bar>
         </div>
+
+        <!--头部导航栏-->
+        <script type="text/x-template" id="top-bar">
+            <div class="top-bar">
+                <div class="top-bar-top">
+                    <h2>外卖</h2>
+                    <div>
+                        <Icon type="md-locate" size="20" />
+                    </div>
+                </div>
+                <div class="top-bar-bottom">
+                    <h3>漳州</h3>
+                    <h4>详细地址</h4>
+                </div>
+            </div>
+        </script>
+        <!--左侧导航栏-->
+        <script type="text/x-template" id="left-nav" >
+            <div class="left-nav">
+                <Menu :theme="theme3" active-name="1" width="auto">
+                    <MenuItem name="1">
+                        <span  @click="getHotFood">热卖</span>
+                    </MenuItem>
+                    <MenuItem name="2" >
+                        <span @click="getFood('主食')">
+                            主食
+                        </span>
+                    </MenuItem>
+                    <MenuItem name="3" >
+                        <span @click="getFood('小菜')">
+                            小菜
+                        </span>
+                    </MenuItem>
+                    <MenuItem name="4">
+                        <span @click="getFood('饮品')">
+                            饮品
+                        </span>
+                    </MenuItem>
+                </Menu>
+            </div>
+        </script>
+        <!--底部选购信息bar-->
+        <script type="text/x-template" id="bottom-bar">
+            <div class="bottom-bar">
+                <div class="bottom-bar-left">
+                    <Icon type="ios-cart-outline" size="40" class="cart-icon" />
+                    <div class="prices">
+                        <span class="price">￥{{price}}</span>
+                        <span class="tPrice">另需外送费 ￥9.0</span>
+                    </div>
+                </div>
+                <Button type="primary" class="order" @click="order">下订单</Button>
+                <Modal
+                        v-model="modal"
+                        title="Title"
+                        :loading="loading"
+                        @on-ok="sendOrder('formOrder')">
+                    <Form ref="formOrder" :model="formOrder" :rules="ruleValidate" :label-width="80">
+                        <FormItem label="配送地址" prop="address">
+                            <Input v-model="formOrder.address" placeholder="请输入配送地址！"></Input>
+                        </FormItem>
+                        <FormItem label="姓名" prop="name">
+                            <Input v-model="formOrder.name" placeholder="请输入姓名！"></Input>
+                        </FormItem>
+                        <FormItem label="联系电话" prop="phone">
+                            <Input v-model="formOrder.phone" placeholder="请输入联系电话！"></Input>
+                        </FormItem>
+                    </Form>
+                    <List header="餐品详情" :footer="'共'+count+'件，小计 ￥'+price" border size="small" class="food-detail">
+                        <ListItem v-for="item in orderList" class="food-detail-item" :key="item.foodId">
+                            <span>{{item.foodName}}</span>
+                            <span>￥{{item.foodPrice}} * {{item.foodCount}}</span>
+                        </ListItem>
+                    </List>
+                    <span>另需配送费￥9.0</span>
+                </Modal>
+            </div>
+        </script>
+        <!--商品卡片-->
+        <script type="text/x-template" id="food-card">
+            <div class="food-card">
+                <div class="food-img">
+                    <img :src="img_src" />
+                </div>
+                <div class="food-info">
+                    <h4>{{food.foodName}}</h4>
+                    <h5>{{food.foodDesc}}</h5>
+                    <h5>￥{{food.foodPrice}}</h5>
+                    <div class="food-num-control">
+                        <Button type="primary" icon="ios-remove"
+                                shape="circle" class="remove"
+                                @click="removeFood"
+                                :style="{display:food.foodCount?'block':'none'}"></Button>
+                        <span>{{food.foodCount!=0?food.foodCount:''}}</span>
+                        <Button type="primary" icon="ios-add" shape="circle" class="add" @click="addFood"></Button>
+                    </div>
+                </div>
+            </div>
+        </script>
         <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=fcd5f097ff80fd733cf92c2efa967f4c"></script>
+        <script src="js/axios.js"></script>
+        <script src="js/ajax.js"></script>
+        <script src="js/ajaxAPI.js"></script>
+
         <script type="text/javascript" src="js/index.js"></script>
+
+
     </body>
 </html>
