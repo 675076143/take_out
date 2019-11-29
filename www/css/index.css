@@ -103,9 +103,11 @@ html,body{
 .food-img{
     width: 100%;
     flex: 1;
+    box-shadow: 0 0 5px rgba(0,0,0,.5);
 }
 .food-img img{
     width: 100%;
+    height: 100%;
 }
 .food-card .food-info{
     flex: 1;
@@ -136,4 +138,7 @@ html,body{
 }
 .food-detail-item>span:nth-child(2){
     flex: 2;
+}
+#search{
+    width: 100%;
 }

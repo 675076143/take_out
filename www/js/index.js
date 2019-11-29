@@ -17,6 +17,7 @@ const test = async (that) => {
 var map
 
 
+
 document.addEventListener("deviceready", () => {
     // log("设备准备就绪")
     document.addEventListener("pause", () => {
@@ -88,7 +89,7 @@ const app = new Vue({
             const that = this
             map = new AMap.Map("container", {
                 resizeEnable: true,
-                center: [116.397428, 39.90923],//地图中心点
+                // center: [116.397428, 39.90923],//地图中心点
                 lang: "zh_en",//中英文地图
                 zoom: 13,//地图显示的缩放级别
                 keyboardEnable: false
@@ -107,14 +108,13 @@ const app = new Vue({
                     //TODO 针对选中的poi实现自己的功能
                     placeSearch.setCity(e.poi.adcode);
                     placeSearch.search(e.poi.name)
-                    //利用经纬度查询天气，如果没有经纬度使用名称查询
-                    const location = e.poi.location.P ? e.poi.location.P + "," + e.poi.location.Q : e.poi.name
-                    that.getWeather(location, that.lang)
                 });
             });
 
         },
         showCityInfo() {
+
+
             //实例化城市查询类
             const citysearch = new AMap.CitySearch();
             //自动获取用户IP，返回当前城市
@@ -127,7 +127,8 @@ const app = new Vue({
                         var citybounds = result.bounds;
                         this.city = cityinfo
                         //地图显示当前城市
-                        map.setBounds(citybounds);
+                        console.log("citybounds=>",citybounds)
+                        // map.setBounds(citybounds);
                     }
                 } else {
 
@@ -235,7 +236,7 @@ const app = new Vue({
                     console.log("sendOrderList=>", this.orderList)
                     this.$refs[name].validate(async (valid) => {
                         if (valid) {
-                            this.$Message.success('订购成功!')
+
                             const orderSubDtoList = []
                             for (let i = 0; i < this.orderList.length; i++) {
                                 const {foodName, foodPrice, foodCount} = this.orderList[i]
@@ -246,6 +247,8 @@ const app = new Vue({
                             const result = await reqOrder(address, name, phone, this.price, orderSubDtoList, this)
                             console.log(result)
                             this.modal = false
+                            this.$Message.success('订购成功!')
+                            this.orderList = []
                         } else {
                             this.$Message.error('Fail!');
                             this.loading = false

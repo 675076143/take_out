@@ -15,7 +15,7 @@
     </head>
     <body>
         <div id="app" class="app">
-            <top-bar></top-bar>
+            <top-bar :city="city"></top-bar>
             <left-nav @change-food="changeFoods"></left-nav>
             <div class="food-card-list">
                 <food-card v-for="food in foodList" :food="food" @add-food="getFood" :key="food.foodId"></food-card>
@@ -29,14 +29,20 @@
             <div class="top-bar">
                 <div class="top-bar-top">
                     <h2>外卖</h2>
-                    <div>
+                    <div @click="modal=true">
                         <Icon type="md-locate" size="20" />
                     </div>
                 </div>
                 <div class="top-bar-bottom">
-                    <h3>漳州</h3>
-                    <h4>详细地址</h4>
+                    <h3>{{city}}</h3>
+                    <h4>就近门店配送，预计30分钟</h4>
                 </div>
+                <Modal v-model="modal" fullscreen title="定位">
+<!--                    <Input v-model="value" placeholder="Enter something..." style="width: 300px" />-->
+
+                    <input id="search" type="search" placeholder="城市名称" v-model="city"/>
+                    <div id="container"></div>
+                </Modal>
             </div>
         </script>
         <!--左侧导航栏-->
@@ -123,7 +129,7 @@
             </div>
         </script>
         <script type="text/javascript" src="cordova.js"></script>
-        <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=fcd5f097ff80fd733cf92c2efa967f4c"></script>
+        <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=fcd5f097ff80fd733cf92c2efa967f4c&plugin=AMap.CitySearch"></script>
         <script src="js/axios.js"></script>
         <script src="js/ajax.js"></script>
         <script src="js/ajaxAPI.js"></script>

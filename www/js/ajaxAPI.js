@@ -13,10 +13,3 @@ const reqFoodByType=(foodType,that)=>{
 const reqOrder = (address,userName,phone,totalPrice,orderSubDtoList,that)=>{
     return ajax('http://'+BASE_URL+'//cordova/takeout/order',{address,userName,phone,totalPrice,orderSubDtoList},'POST',that)
 }
-
-//获取天气数据
-const reqWeather = (location,lang,that) => {
-    console.log("发送请求：",location,lang,that)
-    return ajax('https://free-api.heweather.net/s6/weather',
-        {location,key:"c0eabd2cbf7d4920bb45ff74c85dad5d",lang},'GET',that)
-}
